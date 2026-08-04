@@ -1,0 +1,7 @@
+# Configuração de deploy no Netlify (Next.js 14 App Router)
+# O Netlify detecta o Next.js automaticamente e aplica o runtime dele.
+[build]
+  command = "npm run build"
+
+[build.environment]
+  NODE_VERSION = "20"
