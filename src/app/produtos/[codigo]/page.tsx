@@ -72,7 +72,7 @@ export default async function ProdutoPage({ params }: { params: { codigo: string
           <div>
             <div className="grid aspect-[4/3] place-items-center overflow-hidden rounded-[18px] border border-line bg-surface text-8xl">
               {p.imagem_principal ? (
-                <Image src={p.imagem_principal} alt={p.nome} width={720} height={540} className="h-full w-full object-cover" />
+                <Image src={p.imagem_principal} alt={p.nome} width={720} height={540} className="h-full w-full object-contain" />
               ) : (p.categoria_icone ?? "🎁")}
             </div>
           </div>
