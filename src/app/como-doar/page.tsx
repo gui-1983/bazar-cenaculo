@@ -36,7 +36,7 @@ export default async function ComoDoar() {
         <div className="rounded-xl2 bg-vend-bg p-6">
           <div className="mb-2 font-mono text-sm font-bold text-vend">✕ Não aceitamos</div>
           <h3 className="mb-1.5 font-display text-lg font-semibold">Itens danificados</h3>
-          <p className="text-[14.5px] text-muted">Produtos quebrados, sujos, sem uso, alimentos perecíveis ou itens que precisem de conserto.</p>
+          <p className="text-[14.5px] text-muted">Produtos quebrados, sujos, sem uso ou itens que precisem de conserto.</p>
         </div>
       </section>
 
