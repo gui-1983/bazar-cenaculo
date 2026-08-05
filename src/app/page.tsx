@@ -100,7 +100,7 @@ export default async function Home() {
                 Seu item que descansa no armário pode ajudar uma família.
               </h2>
               <p className="mt-3 max-w-[46ch] opacity-90">
-                Aceitamos móveis, roupas, livros, utensílios e brinquedos em bom estado. A gente combina a coleta.
+                Aceitamos móveis, roupas, livros, utensílios e brinquedos em bom estado. Você mesmo entrega no nosso endereço.
               </p>
             </div>
             <Button href="/como-doar" size="lg" variant="outline" className="!border-white !bg-white !text-[#123f66]">
