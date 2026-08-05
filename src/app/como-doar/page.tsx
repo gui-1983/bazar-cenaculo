@@ -21,7 +21,7 @@ export default async function ComoDoar() {
           Doar é simples. A gente cuida do resto.
         </h1>
         <p className="my-5 max-w-[54ch] text-[clamp(16px,2.1vw,19px)] text-muted">
-          Você separa, a gente combina a retirada ou você entrega na casa. Itens em bom estado ganham uma
+          Você separa os itens e entrega no nosso endereço, nos horários de funcionamento. Itens em bom estado ganham uma
           segunda vida e viram apoio para quem precisa.
         </p>
         <Button href={linkDoacaoWhatsApp(cfg)} external variant="whatsapp" size="lg">Falar no WhatsApp</Button>
@@ -43,7 +43,7 @@ export default async function ComoDoar() {
       {/* Contatos oficiais do bazar (doações) */}
       <section className="py-6">
         <h2 className="mb-1 font-display text-[clamp(22px,3vw,28px)] font-semibold">Fale com a equipe do bazar</h2>
-        <p className="mb-5 text-[15px] text-muted">Para doações, combine a entrega ou a coleta com uma das voluntárias:</p>
+        <p className="mb-5 text-[15px] text-muted">Para doações, combine a entrega no centro com uma das voluntárias:</p>
         <div className="grid gap-4 sm:grid-cols-2">
           {contatosBazar.map((c) => (
             <a key={c.nome} href={`https://wa.me/${c.whatsapp}`} target="_blank" rel="noopener noreferrer"
