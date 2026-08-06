@@ -69,11 +69,13 @@ export default async function ProdutoPage({ params }: { params: { codigo: string
         <div className="grid gap-11 md:grid-cols-[1.05fr_.95fr]">
           {/* GALERIA */}
           <div>
-            <div className="grid aspect-[4/3] place-items-center overflow-hidden rounded-[18px] border border-line bg-surface p-4 text-8xl">
+            <div className="flex min-h-[280px] items-center justify-center overflow-hidden rounded-[18px] border border-line bg-surface p-4">
               {p.imagem_principal ? (
                 // eslint-disable-next-line @next/next/no-img-element
-                <img src={p.imagem_principal} alt={p.nome} className="h-full w-full object-contain" />
-              ) : (p.categoria_icone ?? "🎁")}
+                <img src={p.imagem_principal} alt={p.nome} className="max-h-[520px] w-auto max-w-full" />
+              ) : (
+                <span className="text-8xl">{p.categoria_icone ?? "🎁"}</span>
+              )}
             </div>
           </div>
 
