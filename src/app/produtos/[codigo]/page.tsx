@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import Image from "next/image";
 import { getProdutoPorCodigo, getSemelhantes, getConfig } from "@/lib/queries";
 import { linkReservaWhatsApp } from "@/lib/whatsapp";
 import { brl } from "@/lib/utils";
@@ -72,7 +71,8 @@ export default async function ProdutoPage({ params }: { params: { codigo: string
           <div>
             <div className="grid aspect-[4/3] place-items-center overflow-hidden rounded-[18px] border border-line bg-surface text-8xl">
               {p.imagem_principal ? (
-                <Image src={p.imagem_principal} alt={p.nome} width={720} height={540} className="h-full w-full object-contain" />
+                // eslint-disable-next-line @next/next/no-img-element
+  <img src={p.imagem_principal} alt={p.nome} className="h-full w-full object-contain" />
               ) : (p.categoria_icone ?? "🎁")}
             </div>
           </div>
