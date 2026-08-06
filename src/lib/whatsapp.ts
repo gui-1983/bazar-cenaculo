@@ -6,6 +6,8 @@ type WaConfig = { whatsapp: string; siteUrl: string };
 const fallback: WaConfig = { whatsapp: config.whatsapp, siteUrl: config.siteUrl };
 
 // ===== Reserva Inteligente =====
+// Monta a mensagem pré-preenchida e devolve o link wa.me pronto.
+// `cfg` vem de getConfig() (número/URL editáveis no painel); sem ele, usa o .env.
 export function linkReservaWhatsApp(p: Produto, cfg: WaConfig = fallback): string {
   const msg = [
     "Olá!",

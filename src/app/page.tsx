@@ -4,7 +4,7 @@ import { ProductCard } from "@/components/catalog/ProductCard";
 import { Button } from "@/components/ui";
 import { HeroArt } from "@/components/site/HeroArt";
 
-export const revalidate = 60;
+export const revalidate = 0; // sempre buscar dados frescos (produto novo aparece na hora)
 
 export default async function Home() {
   const [destaques, novos, categorias, todos, cfg] = await Promise.all([
@@ -85,7 +85,7 @@ export default async function Home() {
           <div className="grid gap-4 md:grid-cols-3">
             <Step n="01" t="Escolha um item" d="Navegue pelo catálogo e abra o produto que gostou para ver detalhes e fotos." />
             <Step n="02" t="Reserve pelo WhatsApp" d="Um toque monta uma mensagem já preenchida com o código, o nome e o valor." />
-            <Step n="03" t="Combine a retirada" d="Um voluntário confirma a reserva e combina o melhor horário para buscar." />
+            <Step n="03" t="Combine a retirada" d="Um voluntário confirma a reserva e combina o melhor horário para você retirar no local." />
           </div>
         </Section>
 

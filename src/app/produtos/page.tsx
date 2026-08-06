@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { getProdutos, getCategorias } from "@/lib/queries";
 import { CatalogClient } from "@/components/catalog/CatalogClient";
 
-export const revalidate = 60;
+export const revalidate = 0; // sempre buscar dados frescos (produto novo aparece na hora)
 export const metadata: Metadata = {
   title: "Produtos",
   description: "Explore os itens disponíveis no Bazar Beneficente e reserve pelo WhatsApp.",

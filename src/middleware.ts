@@ -3,6 +3,7 @@ import { createServerClient, type CookieOptions } from "@supabase/ssr";
 
 type CookieToSet = { name: string; value: string; options: CookieOptions };
 
+// Página de manutenção (auto-contida, sem depender de nada externo).
 const MAINTENANCE_HTML = `<!doctype html>
 <html lang="pt-BR"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -30,6 +31,9 @@ const MAINTENANCE_HTML = `<!doctype html>
 </div></body></html>`;
 
 export async function middleware(request: NextRequest) {
+  // MODO MANUTENÇÃO: liga/desliga o site inteiro pela variável SITE_LOCKED.
+  // Para derrubar: defina SITE_LOCKED = true na Vercel e faça redeploy.
+  // Para religar: defina SITE_LOCKED = false (ou remova) e faça redeploy.
   if (process.env.SITE_LOCKED === "true") {
     return new NextResponse(MAINTENANCE_HTML, {
       status: 503,
@@ -38,6 +42,7 @@ export async function middleware(request: NextRequest) {
   }
 
   const path = request.nextUrl.pathname;
+  // Páginas públicas passam direto; só o painel exige login.
   if (!path.startsWith("/admin")) return NextResponse.next();
 
   let response = NextResponse.next({ request });

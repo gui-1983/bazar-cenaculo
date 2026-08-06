@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Logo } from "@/components/site/Logo";
+import { SairButton } from "./SairButton";
 
 export function AdminSidebar({ active }: { active: string }) {
   const items = [
@@ -27,6 +28,7 @@ export function AdminSidebar({ active }: { active: string }) {
           </Link>
         ))}
       </nav>
+      <SairButton />
     </aside>
   );
 }
