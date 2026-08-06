@@ -9,7 +9,7 @@ import { Button, StatusBadge, Tag } from "@/components/ui";
 import { BotaoReservar } from "@/components/catalog/BotaoReservar";
 import { ProductCard } from "@/components/catalog/ProductCard";
 
-export const revalidate = 60;
+export const revalidate = 0; // sempre buscar dados frescos (produto novo aparece na hora)
 
 export async function generateMetadata({ params }: { params: { codigo: string } }): Promise<Metadata> {
   const p = await getProdutoPorCodigo(params.codigo);
@@ -69,10 +69,10 @@ export default async function ProdutoPage({ params }: { params: { codigo: string
         <div className="grid gap-11 md:grid-cols-[1.05fr_.95fr]">
           {/* GALERIA */}
           <div>
-            <div className="grid aspect-[4/3] place-items-center overflow-hidden rounded-[18px] border border-line bg-surface text-8xl">
+            <div className="grid aspect-[4/3] place-items-center overflow-hidden rounded-[18px] border border-line bg-surface p-4 text-8xl">
               {p.imagem_principal ? (
                 // eslint-disable-next-line @next/next/no-img-element
-  <img src={p.imagem_principal} alt={p.nome} className="h-full w-full object-contain" />
+                <img src={p.imagem_principal} alt={p.nome} className="h-full w-full object-contain" />
               ) : (p.categoria_icone ?? "🎁")}
             </div>
           </div>
