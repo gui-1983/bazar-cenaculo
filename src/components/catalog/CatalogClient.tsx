@@ -12,10 +12,10 @@ const STATUS = [
 ];
 
 export function CatalogClient({
-  produtos, categorias,
-}: { produtos: Produto[]; categorias: Categoria[] }) {
+  produtos, categorias, initialCat = "all",
+}: { produtos: Produto[]; categorias: Categoria[]; initialCat?: string }) {
   const [q, setQ] = useState("");
-  const [cat, setCat] = useState("all");
+  const [cat, setCat] = useState(initialCat);
   const [status, setStatus] = useState("all");
 
   const list = useMemo(() => {
