@@ -113,3 +113,4 @@ A tela **/admin/relatorios** soma tudo que foi vendido por período (hoje, 7 dia
   (as fontes são baixadas no build). Em produção na Vercel isso é automático.
 - Arquitetura preparada para evoluir (PIX/cartão, estoque, área do comprador etc.) —
   veja `docs/DEPLOY.md` → seção "Evoluções futuras".
+  
