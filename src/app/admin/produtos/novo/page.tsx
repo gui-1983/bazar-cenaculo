@@ -238,13 +238,32 @@ export default function ProdutoForm() {
             </Field>
           )}
 
-          <Field label={editId ? "Adicionar mais fotos" : "Fotos (até 10 — convertidas para WebP automaticamente)"}>
+          <Field label={editId ? "Adicionar mais fotos" : "Fotos (até 10 — pode adicionar uma de cada vez)"}>
             <label className="block cursor-pointer rounded-xl border-2 border-dashed border-[#cfe0d7] bg-surface p-6 text-center text-sm text-muted">
-              📷 Toque para escolher as fotos
+              📷 Toque para tirar ou escolher fotos
+              <span className="mt-1 block text-xs">Pode ir adicionando uma de cada vez — elas se somam aqui embaixo.</span>
               <input type="file" accept="image/*" multiple className="hidden"
-                onChange={(e) => setArquivos(Array.from(e.target.files ?? []))} />
+                onChange={(e) => {
+                  const novas = Array.from(e.target.files ?? []);
+                  setArquivos((prev) => [...prev, ...novas].slice(0, 10));
+                  e.currentTarget.value = ""; // permite tirar/escolher outra em sequência
+                }} />
             </label>
-            {arquivos.length > 0 && <p className="mt-2 text-xs text-muted">{arquivos.length} nova(s) foto(s) selecionada(s)</p>}
+            {arquivos.length > 0 && (
+              <>
+                <p className="mt-2 text-xs text-muted">{arquivos.length} nova(s) foto(s) — toque no ✕ para remover:</p>
+                <div className="mt-2 flex flex-wrap gap-2">
+                  {arquivos.map((file, i) => (
+                    <div key={i} className="relative">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img src={URL.createObjectURL(file)} alt="" className="h-20 w-20 rounded-lg object-cover" />
+                      <button type="button" onClick={() => setArquivos((prev) => prev.filter((_, j) => j !== i))}
+                        className="absolute -right-1.5 -top-1.5 grid h-6 w-6 place-items-center rounded-full bg-vend text-xs text-white shadow">✕</button>
+                    </div>
+                  ))}
+                </div>
+              </>
+            )}
           </Field>
 
           <label className="flex items-center gap-2 text-sm">
