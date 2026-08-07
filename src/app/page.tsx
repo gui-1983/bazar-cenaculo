@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { getProdutos, getCategorias, getConfig } from "@/lib/queries";
+import { HeroArt } from "@/components/site/HeroArt";
 import { ProductCard } from "@/components/catalog/ProductCard";
 import { Button } from "@/components/ui";
 
@@ -37,12 +38,12 @@ export default async function Home() {
             </p>
           </div>
           <div className="overflow-hidden rounded-3xl bg-surface2 shadow-[0_34px_60px_-26px_rgba(28,58,96,.42)]">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={cfg.heroUrl || "/bazar-evento.jpeg"}
-              alt="Convite para o Bazar Beneficente do Cenáculo Espírita Thiago Maior"
-              className="aspect-[4/5] w-full object-cover"
-            />
+            {cfg.heroUrl ? (
+              /* eslint-disable-next-line @next/next/no-img-element */
+              <img src={cfg.heroUrl} alt="Bazar do Cenáculo" className="block h-auto w-full" />
+            ) : (
+              <div className="aspect-[4/3]"><HeroArt /></div>
+            )}
           </div>
         </div>
       </div>

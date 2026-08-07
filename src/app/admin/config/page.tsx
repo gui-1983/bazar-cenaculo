@@ -122,7 +122,7 @@ export default function Configuracoes() {
             <Card titulo="Foto do topo" nota="Aparece no início do site. Use uma foto boa do bazar (paisagem, bem iluminada).">
               {f.hero_url && (
                 /* eslint-disable-next-line @next/next/no-img-element */
-                <img src={f.hero_url} alt="Prévia do topo" className="mb-3 aspect-[4/3] w-full rounded-xl object-cover" />
+                <img src={f.hero_url} alt="Prévia do topo" className="mb-3 max-h-[300px] w-full rounded-xl object-contain bg-surface" />
               )}
               <label className="block cursor-pointer rounded-xl border-2 border-dashed border-[#cfe0d7] bg-surface p-6 text-center text-sm text-muted">
                 {enviando ? "Enviando…" : "📷 Escolher foto do topo"}
