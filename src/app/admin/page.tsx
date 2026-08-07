@@ -12,6 +12,10 @@ export default async function Dashboard() {
   const { data } = await sb.from("produtos").select("*").order("criado_em", { ascending: false });
   const produtos = (data as Produto[]) ?? [];
 
+  // total de acessos ao site (contador visível só no admin)
+  const { data: metrica } = await sb.from("metricas").select("total_acessos").eq("id", 1).maybeSingle();
+  const totalAcessos = (metrica?.total_acessos as number) ?? 0;
+
   const c = (s: string) => produtos.filter((p) => p.status === s).length;
   const stats = [
     { k: "Cadastrados", v: produtos.length, cor: "" },
@@ -32,6 +36,14 @@ export default async function Dashboard() {
               <div className={`mt-1 font-display text-[30px] font-bold ${s.cor}`}>{s.v}</div>
             </div>
           ))}
+        </div>
+
+        <div className="mb-5 flex items-center gap-3 rounded-2xl border border-line bg-white p-4">
+          <span className="text-2xl">👁️</span>
+          <div>
+            <div className="text-[13px] font-semibold text-muted">Acessos ao site (total)</div>
+            <div className="font-display text-[26px] font-bold">{totalAcessos.toLocaleString("pt-BR")}</div>
+          </div>
         </div>
 
         <div className="flex items-center justify-between">
