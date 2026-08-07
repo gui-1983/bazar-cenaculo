@@ -34,6 +34,8 @@ export default function Configuracoes() {
   const [salvando, setSalvando] = useState(false);
   const [enviando, setEnviando] = useState(false);
   const [msg, setMsg] = useState<string | null>(null);
+  const [bloqueado, setBloqueado] = useState(false);
+  const [alternando, setAlternando] = useState(false);
   const set = (k: keyof Form, v: string) => setF((p) => ({ ...p, [k]: v }));
 
   useEffect(() => {
@@ -46,6 +48,7 @@ export default function Configuracoes() {
           endereco: data.endereco ?? "", horarios: data.horarios ?? "",
           hero_url: data.hero_url ?? "",
         });
+        setBloqueado(data.site_bloqueado === true);
       }
       setCarregando(false);
     });
@@ -65,6 +68,18 @@ export default function Configuracoes() {
       setMsg("Não consegui enviar a foto. Tente outra imagem.");
     }
     setEnviando(false);
+  }
+
+  async function alternarBloqueio() {
+    const novo = !bloqueado;
+    setAlternando(true); setMsg(null);
+    const { error } = await sb.from("configuracoes").update({ site_bloqueado: novo }).eq("id", 1);
+    setAlternando(false);
+    if (error) { setMsg("Erro ao alterar: " + error.message); return; }
+    setBloqueado(novo);
+    setMsg(novo
+      ? "Site bloqueado para o público. Você continua com acesso total ao painel."
+      : "Site liberado! O público já pode acessar normalmente.");
   }
 
   async function salvar() {
@@ -102,6 +117,25 @@ export default function Configuracoes() {
           <div className="rounded-2xl border border-line bg-white p-8 text-center text-sm text-muted">Carregando…</div>
         ) : (
           <div className="space-y-5">
+            <div className={`rounded-2xl border p-5 ${bloqueado ? "border-vend/40 bg-vend-bg" : "border-line bg-white"}`}>
+              <div className="flex flex-wrap items-center justify-between gap-4">
+                <div className="min-w-0">
+                  <div className="font-display text-[15px] font-semibold">
+                    {bloqueado ? "🔴 Site bloqueado para o público" : "🟢 Site no ar (público)"}
+                  </div>
+                  <p className="mt-1 text-[13px] text-muted">
+                    {bloqueado
+                      ? "Os visitantes veem a mensagem \"Voltamos já\". O painel continua liberado para você trabalhar."
+                      : "Bloqueie o site para o público enquanto organiza os produtos. O painel nunca é bloqueado."}
+                  </p>
+                </div>
+                <button onClick={alternarBloqueio} disabled={alternando}
+                  className={`shrink-0 rounded-xl px-4 py-2.5 text-sm font-semibold text-white disabled:opacity-60 ${bloqueado ? "bg-disp hover:opacity-90" : "bg-vend hover:opacity-90"}`}>
+                  {alternando ? "Aguarde…" : bloqueado ? "Liberar site" : "Bloquear site"}
+                </button>
+              </div>
+            </div>
+
             <Card titulo="Contato" nota="É este WhatsApp que recebe as reservas e este e-mail que aparece no rodapé.">
               <Campo label="WhatsApp (com DDD)" valor={f.whatsapp} on={(v) => set("whatsapp", v)} placeholder="31 99999-9999" inputMode="tel" />
               <Campo label="E-mail" valor={f.email} on={(v) => set("email", v)} placeholder="bazar@cenaculo.org.br" inputMode="email" />

@@ -30,8 +30,30 @@ const MAINTENANCE_HTML = `<!doctype html>
   <div class="inst">Bazar Beneficente · Cenáculo Espírita Thiago Maior</div>
 </div></body></html>`;
 
+// Lê no banco se o site está bloqueado pelo painel (Configurações).
+// Fail-open: qualquer erro/timeout NÃO bloqueia (o site continua no ar).
+async function sitePublicoBloqueado(): Promise<boolean> {
+  try {
+    const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+    const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+    if (!url || !key) return false;
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), 2500);
+    const res = await fetch(`${url}/rest/v1/configuracoes?select=site_bloqueado&id=eq.1`, {
+      headers: { apikey: key, Authorization: `Bearer ${key}` },
+      signal: controller.signal,
+      cache: "no-store",
+    });
+    clearTimeout(timer);
+    if (!res.ok) return false;
+    const rows = (await res.json()) as Array<{ site_bloqueado?: boolean }>;
+    return rows?.[0]?.site_bloqueado === true;
+  } catch {
+    return false;
+  }
+}
+
 export async function middleware(request: NextRequest) {
-  // MODO MANUTENÇÃO: liga/desliga o site inteiro pela variável SITE_LOCKED.
   // Para derrubar: defina SITE_LOCKED = true na Vercel e faça redeploy.
   // Para religar: defina SITE_LOCKED = false (ou remova) e faça redeploy.
   if (process.env.SITE_LOCKED === "true") {
@@ -42,8 +64,17 @@ export async function middleware(request: NextRequest) {
   }
 
   const path = request.nextUrl.pathname;
-  // Páginas públicas passam direto; só o painel exige login.
-  if (!path.startsWith("/admin")) return NextResponse.next();
+  // Páginas públicas: aplica o bloqueio controlado no painel (Configurações).
+  // O /admin NUNCA é bloqueado por aqui — você continua trabalhando.
+  if (!path.startsWith("/admin")) {
+    if (await sitePublicoBloqueado()) {
+      return new NextResponse(MAINTENANCE_HTML, {
+        status: 503,
+        headers: { "content-type": "text/html; charset=utf-8", "retry-after": "3600" },
+      });
+    }
+    return NextResponse.next();
+  }
 
   let response = NextResponse.next({ request });
   const supabase = createServerClient(
