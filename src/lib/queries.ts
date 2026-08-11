@@ -40,6 +40,16 @@ export async function getProdutoPorCodigo(codigo: string): Promise<Produto | nul
   return (data as Produto) ?? null;
 }
 
+export async function getImagensProduto(produtoId: string): Promise<string[]> {
+  const sb = supabasePublic();
+  const { data } = await sb
+    .from("produto_imagens")
+    .select("url")
+    .eq("produto_id", produtoId)
+    .order("ordem");
+  return ((data as { url: string }[]) ?? []).map((r) => r.url).filter(Boolean);
+}
+
 export async function getSemelhantes(codigo: string, categoriaSlug?: string | null) {
   const sb = supabasePublic();
   let q = sb

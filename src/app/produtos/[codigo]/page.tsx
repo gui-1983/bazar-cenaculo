@@ -1,13 +1,14 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { getProdutoPorCodigo, getSemelhantes, getConfig } from "@/lib/queries";
+import { getProdutoPorCodigo, getSemelhantes, getConfig, getImagensProduto } from "@/lib/queries";
 import { linkReservaWhatsApp } from "@/lib/whatsapp";
 import { brl } from "@/lib/utils";
 import { config } from "@/lib/config";
 import { Button, StatusBadge, Tag } from "@/components/ui";
 import { BotaoReservar } from "@/components/catalog/BotaoReservar";
 import { ProductCard } from "@/components/catalog/ProductCard";
+import { Galeria } from "@/components/catalog/Galeria";
 
 export const revalidate = 0; // sempre buscar dados frescos (produto novo aparece na hora)
 
@@ -30,10 +31,12 @@ export default async function ProdutoPage({ params }: { params: { codigo: string
   const p = await getProdutoPorCodigo(params.codigo);
   if (!p) notFound();
 
-  const [semelhantes, cfg] = await Promise.all([
+  const [semelhantes, cfg, imagens] = await Promise.all([
     getSemelhantes(p.codigo, p.categoria_slug),
     getConfig(),
+    getImagensProduto(p.id),
   ]);
+  const galeria = imagens.length > 0 ? imagens : (p.imagem_principal ? [p.imagem_principal] : []);
   const reservaClienteVencida =
     p.status === "reservado" && p.reserva_origem === "cliente" &&
     !!p.reserva_expira_em && new Date(p.reserva_expira_em).getTime() < Date.now();
@@ -69,14 +72,13 @@ export default async function ProdutoPage({ params }: { params: { codigo: string
         <div className="grid gap-11 md:grid-cols-[1.05fr_.95fr]">
           {/* GALERIA */}
           <div>
-            <div className="flex min-h-[280px] items-center justify-center overflow-hidden rounded-[18px] border border-line bg-surface p-4">
-              {p.imagem_principal ? (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img src={p.imagem_principal} alt={p.nome} className="max-h-[520px] w-auto max-w-full" />
-              ) : (
+            {galeria.length > 0 ? (
+              <Galeria imagens={galeria} alt={p.nome} />
+            ) : (
+              <div className="flex min-h-[280px] items-center justify-center overflow-hidden rounded-[18px] border border-line bg-surface p-4">
                 <span className="text-8xl">{p.categoria_icone ?? "🎁"}</span>
-              )}
-            </div>
+              </div>
+            )}
           </div>
 
           {/* PAINEL */}
