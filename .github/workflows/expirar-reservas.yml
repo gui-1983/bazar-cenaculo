@@ -1,0 +1,22 @@
+name: Expirar reservas vencidas
+
+on:
+  schedule:
+    - cron: "0 */6 * * *"
+  workflow_dispatch: {}
+
+jobs:
+  expirar:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Chamar a função expirar_reservas no Supabase
+        run: |
+          echo "Expirando reservas vencidas..."
+          curl -sS -o /dev/null -w "Resposta HTTP: %{http_code}\n" \
+            -X POST \
+            "${{ secrets.SUPABASE_URL }}/rest/v1/rpc/expirar_reservas" \
+            -H "apikey: ${{ secrets.SUPABASE_ANON_KEY }}" \
+            -H "Authorization: Bearer ${{ secrets.SUPABASE_ANON_KEY }}" \
+            -H "Content-Type: application/json" \
+            -d "{}"
+          echo "Concluido."
