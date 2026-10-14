@@ -9,12 +9,23 @@ export async function getCategorias(): Promise<Categoria[]> {
   return data ?? [];
 }
 
+// Libera reservas de cliente vencidas (48h) direto no servidor.
+// Silenciosa: se falhar, não atrapalha a listagem.
+async function expirarReservasVencidas() {
+  try {
+    await supabasePublic().rpc("expirar_reservas");
+  } catch {
+    /* ignora */
+  }
+}
+
 export async function getProdutos(opts?: {
   categoria?: string;
   destaque?: boolean;
   limit?: number;
 }): Promise<Produto[]> {
   const sb = supabasePublic();
+  await expirarReservasVencidas();
   let q = sb
     .from("vw_produtos")
     .select("*")
@@ -31,6 +42,7 @@ export async function getProdutos(opts?: {
 
 export async function getProdutoPorCodigo(codigo: string): Promise<Produto | null> {
   const sb = supabasePublic();
+  await expirarReservasVencidas();
   const { data } = await sb
     .from("vw_produtos")
     .select("*")

@@ -18,7 +18,21 @@ const STATUS = [
 type ImgExistente = { id: string; url: string };
 
 async function paraWebp(file: File, maxW = 1600): Promise<Blob> {
-  const img = await createImageBitmap(file);
+  let fonte: Blob = file;
+  // Foto de iPhone (HEIC/HEIF): Chrome/Edge no Windows não leem esse formato,
+  // então convertemos para JPEG antes. A biblioteca só é baixada quando
+  // realmente aparece uma foto HEIC (import dinâmico) — não pesa no resto.
+  const ehHeic = /heic|heif/i.test(file.type) || /\.hei[cf]$/i.test(file.name);
+  if (ehHeic) {
+    try {
+      const heic2any = (await import("heic2any")).default;
+      const conv = await heic2any({ blob: file, toType: "image/jpeg", quality: 0.9 });
+      fonte = Array.isArray(conv) ? conv[0] : conv;
+    } catch {
+      fonte = file; // se falhar, tenta seguir com o original
+    }
+  }
+  const img = await createImageBitmap(fonte);
   const escala = Math.min(1, maxW / img.width);
   const canvas = document.createElement("canvas");
   canvas.width = Math.round(img.width * escala);
@@ -80,17 +94,21 @@ export default function ProdutoForm() {
 
   async function subirImagens(produtoId: string, offset: number) {
     const lista = arquivos.slice(0, Math.max(0, 10 - offset));
-    for (let i = 0; i < lista.length; i++) {
-      const blob = await paraWebp(lista[i]);
-      const path = `${produtoId}/${Date.now()}-${offset + i}.webp`;
-      const up = await sb.storage.from("produtos").upload(path, blob, { contentType: "image/webp" });
-      if (!up.error) {
-        const { data: pub } = sb.storage.from("produtos").getPublicUrl(path);
-        await sb.from("produto_imagens").insert({
-          produto_id: produtoId, url: pub.publicUrl, ordem: offset + i, principal: offset + i === 0,
-        });
-      }
-    }
+    const carimbo = Date.now();
+    // envia todas as fotos EM PARALELO (bem mais rápido que uma de cada vez)
+    await Promise.all(
+      lista.map(async (arquivo, i) => {
+        const blob = await paraWebp(arquivo);
+        const path = `${produtoId}/${carimbo}-${offset + i}.webp`;
+        const up = await sb.storage.from("produtos").upload(path, blob, { contentType: "image/webp" });
+        if (!up.error) {
+          const { data: pub } = sb.storage.from("produtos").getPublicUrl(path);
+          await sb.from("produto_imagens").insert({
+            produto_id: produtoId, url: pub.publicUrl, ordem: offset + i, principal: offset + i === 0,
+          });
+        }
+      })
+    );
   }
 
   async function removerImagem(img: ImgExistente) {
@@ -242,7 +260,7 @@ export default function ProdutoForm() {
             <label className="block cursor-pointer rounded-xl border-2 border-dashed border-[#cfe0d7] bg-surface p-6 text-center text-sm text-muted">
               📷 Toque para tirar ou escolher fotos
               <span className="mt-1 block text-xs">Pode ir adicionando uma de cada vez — elas se somam aqui embaixo.</span>
-              <input type="file" accept="image/*" multiple className="hidden"
+              <input type="file" accept="image/*,.heic,.heif" multiple className="hidden"
                 onChange={(e) => {
                   const novas = Array.from(e.target.files ?? []);
                   setArquivos((prev) => [...prev, ...novas].slice(0, 10));
