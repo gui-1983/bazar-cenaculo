@@ -29,7 +29,7 @@ export async function getProdutos(opts?: {
   let q = sb
     .from("vw_produtos")
     .select("*")
-    .neq("status", "oculto")
+    .not("status", "in", "(oculto,vendido)")
     .order("criado_em", { ascending: false });
 
   if (opts?.categoria) q = q.eq("categoria_slug", opts.categoria);
@@ -47,7 +47,7 @@ export async function getProdutoPorCodigo(codigo: string): Promise<Produto | nul
     .from("vw_produtos")
     .select("*")
     .eq("codigo", codigo)
-    .neq("status", "oculto")
+    .not("status", "in", "(oculto,vendido)")
     .maybeSingle();
   return (data as Produto) ?? null;
 }
@@ -68,7 +68,7 @@ export async function getSemelhantes(codigo: string, categoriaSlug?: string | nu
     .from("vw_produtos")
     .select("*")
     .neq("codigo", codigo)
-    .neq("status", "oculto")
+    .not("status", "in", "(oculto,vendido)")
     .limit(4);
   if (categoriaSlug) q = q.eq("categoria_slug", categoriaSlug);
   const { data } = await q;
