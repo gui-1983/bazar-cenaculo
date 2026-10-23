@@ -8,7 +8,6 @@ const STATUS = [
   { k: "all", label: "Todos" },
   { k: "disponivel", label: "Disponíveis" },
   { k: "reservado", label: "Reservados" },
-  { k: "vendido", label: "Vendidos" },
 ];
 
 export function CatalogClient({
