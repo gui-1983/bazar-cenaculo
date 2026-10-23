@@ -1,5 +1,4 @@
 import Link from "next/link";
-import Image from "next/image";
 import { brl, cn } from "@/lib/utils";
 import { StatusBadge, Tag } from "@/components/ui";
 import type { Produto } from "@/lib/types";
@@ -16,12 +15,12 @@ export function ProductCard({ p }: { p: Produto }) {
     >
       <div className="relative aspect-[4/3] overflow-hidden bg-surface">
         {p.imagem_principal ? (
-          <Image
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
             src={p.imagem_principal}
             alt={p.nome}
-            fill
-            sizes="(max-width:900px) 50vw, 25vw"
-            className="object-cover transition-transform duration-300 group-hover:scale-[1.03]"
+            loading="lazy"
+            className="absolute inset-0 h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.03]"
           />
         ) : (
           <div className="grid h-full w-full place-items-center text-5xl opacity-90">
