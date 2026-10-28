@@ -10,6 +10,12 @@ const H48 = 48 * 3600 * 1000;
 const agora = () => Date.now();
 const horas = (ms: number) => Math.floor(ms / 3600000);
 const minutos = (ms: number) => Math.floor((ms % 3600000) / 60000);
+// Exibe o prazo de forma amigável: dias quando longo, senão horas/min.
+const prazoTexto = (ms: number) => {
+  const dias = Math.floor(ms / 86400000);
+  if (dias >= 2) return `${dias} dias`;
+  return `${horas(ms)}h ${minutos(ms)}min`;
+};
 
 export default function Reservas() {
   const sb = supabaseBrowser();
@@ -158,9 +164,11 @@ export default function Reservas() {
                   <div className="mt-3 flex flex-wrap items-center justify-between gap-2">
                     <span className="text-[13px] text-muted">
                       {cliente
-                        ? (msLeft > 0
-                            ? <>⏳ expira em <b className="text-res">{horas(msLeft)}h {minutos(msLeft)}min</b></>
-                            : <>⏳ <b className="text-res">expirada</b> — atualize a página para liberar</>)
+                        ? (p.reserva_expira_em
+                            ? (msLeft > 0
+                                ? <>⏳ expira em <b className="text-res">{prazoTexto(msLeft)}</b></>
+                                : <>⏳ <b className="text-res">expirada</b> — atualize a página para liberar</>)
+                            : <>reservada pelo site · há {horas(agora() - new Date(p.reservado_em ?? Date.now()).getTime())}h</>)
                         : (revisar
                             ? <>⏰ <b className="text-res">reservada há mais de 48h</b> — ainda está reservada?</>
                             : <>sem prazo · reservada há {horas(agora() - new Date(p.reservado_em ?? Date.now()).getTime())}h</>)}

@@ -9,7 +9,7 @@ export async function getCategorias(): Promise<Categoria[]> {
   return data ?? [];
 }
 
-// Libera reservas de cliente vencidas (48h) direto no servidor.
+// Libera reservas de cliente vencidas (prazo definido na função reservar_cliente) direto no servidor.
 // Silenciosa: se falhar, não atrapalha a listagem.
 async function expirarReservasVencidas() {
   try {

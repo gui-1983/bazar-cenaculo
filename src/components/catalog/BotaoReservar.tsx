@@ -28,8 +28,7 @@ export function BotaoReservar({ codigo, waLink }: { codigo: string; waLink: stri
       <div className="rounded-xl border border-[#f4e2bd] bg-res-bg p-4 text-center">
         <div className="font-display text-[15px] font-semibold text-res">🟡 Reserva registrada!</div>
         <p className="mt-1 text-[13px] text-muted">
-          Combine a retirada pelo WhatsApp. Você tem <b>48 horas</b> para retirar — depois disso a
-          reserva é liberada para outra pessoa.
+          Combine a retirada pelo WhatsApp. O item fica <b>separado no seu nome</b> até a retirada.
         </p>
         <a href={waLink} target="_blank" rel="noopener noreferrer" className="mt-3 inline-block text-[13.5px] font-semibold text-green-600 underline underline-offset-2">
           Reabrir o WhatsApp
@@ -52,7 +51,7 @@ export function BotaoReservar({ codigo, waLink }: { codigo: string; waLink: stri
         {estado === "carregando" ? "Reservando…" : "🟢 Reservar pelo WhatsApp"}
       </Button>
       <p className="mt-2 text-center text-[12.5px] text-muted">
-        Ao reservar, o item fica separado no seu nome por <b>48 horas</b> para retirada.
+        Ao reservar, o item fica <b>separado no seu nome</b> para retirada.
       </p>
     </>
   );
